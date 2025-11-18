@@ -16,7 +16,6 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
@@ -32,10 +31,29 @@ services:
       - my-network
     depends_on:
       - ollama
+  comfyui:
+    image: obeliks/comfyui:sha-243e9cc-cu118
+    container_name: comfyui
+    restart: unless-stopped
+    ports:
+      - "8188:8188"
+    volumes:
+      - comfyui:/workspace
+      - comfyui-models:/workspace/ComfyUI/models
+    networks:
+      - my-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
 
 volumes:
   ollama:
   open-webui:
+  comfyui:
+  comfyui-models:
 
 networks:
   my-network:
